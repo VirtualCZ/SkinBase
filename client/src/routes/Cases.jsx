@@ -3,14 +3,55 @@ import Axios from "axios";
 import { useState, useEffect } from "react";
 import ItemCard from "../components/ItemCard";
 
+import ReactPaginate from 'react-paginate';
+import ReactDOM from 'react-dom';
+
+const Items = ({currentItems}) => {
+  return(
+    <>
+      {currentItems && currentItems.map(item => (
+        <ItemCard 
+          key = {item.iditem}
+          casename = {item.casename}
+          skinname = {item.casename} 
+          skinimage = {item.caseimage}
+          price = {item.caseprice}
+        />
+      ))}
+    </>
+  )
+}
+
 const Cases = () => {
-  const [Cases, setCases] = useState([])
+  const [data, setData] = useState([])
+  const [offset, setOffset] = useState(0);
+  const [perPage] = useState(10);
+  const [pageCount, setPageCount] = useState(0)
+
+  const getData = async() => {
+    const res = await Axios.get(`http://localhost:3030/api/getCases`)
+    const data = res.data;
+              const slice = data.slice(offset, offset + perPage)
+              const postData = slice.map(item => 
+                <ItemCard 
+                  key = {item.iditem}
+                  casename = {item.casename}
+                  skinname = {item.casename} 
+                  skinimage = {item.caseimage}
+                  price = {item.caseprice}
+                />
+              )
+              setData(postData)
+              setPageCount(Math.ceil(data.length / perPage))
+  }
+  const handlePageClick = (e) => {
+    const selectedPage = e.selected;
+    setOffset(selectedPage + 1)
+  };
 
   useEffect(() => {
-    Axios.get(`http://localhost:3030/api/getCases`).then((response)=> {
-      setCases(response.data);
-    })
-  }, [])
+    getData()
+  }, [offset])
 
     return(
     <div className="flex justify-center text-white">
@@ -22,19 +63,27 @@ const Cases = () => {
             </span>
           </div>
           <div className="grid grid-cols-3">
-            {Cases.map(item => (
-              <ItemCard 
-                key = {item.iditem}
-                casename = {item.casename}
-                skinname = {item.casename} 
-                skinimage = {item.caseimage}
-                price = {item.caseprice}
-              />
-            ))}
+            {data}
+          </div>
+          <div className="flex">
+            <ReactPaginate
+              previousLabel={"prev"}
+              nextLabel={"next"}
+              breakLabel={"..."}
+              breakClassName={"break-me"}
+              pageCount={pageCount}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={5}
+              onPageChange={handlePageClick}
+              containerClassName={"pagination"}
+              subContainerClassName={"pages pagination"}
+              activeClassName={"active"}
+            />
           </div>
         </div>
       </div>
     </div>
     )
 }
+
 export default Cases

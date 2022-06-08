@@ -48,6 +48,11 @@ const WeaponDetail = () => {
         <div className="flex justify-center text-white">
             <div className="flex justify-center w-3/5">
                 <div className="w-[100%]">
+                    <div className=" text-3xl flex ml-auto mr-auto justify-center w-[40%]">
+                        <p>
+                            {SkinImg.skinname}
+                        </p>
+                    </div>
                     <div className="grid grid-cols-2">
                         {/* Skin picture */}
                         <div className="font-bold text-center bg-card w-[95%] m-[2.5%] rounded-cool p-4">

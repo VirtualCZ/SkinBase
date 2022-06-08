@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import Cases from "./routes/Cases"
 import Case_detail from "./routes/Case_detail"
+import Cart from "./routes/Cart"
 import Knives from "./routes/Knives"
 import Pistols from "./routes/Pistols"
 import Rifles from "./routes/Rifles"
@@ -22,13 +23,18 @@ export const AppContext = createContext(null);
 const App = () => {
   const [casename, setCasename] = useState("")
   const [skin, setSkin] = useState("")
+  const [cartContentNum, setCartContentNum]= useState(0)
+  const [cartContent, setCartContent]= useState([])
+
   return(
-    <AppContext.Provider value={{ casename, setCasename }}>
+    <AppContext.Provider value={{ casename, setCasename, cartContentNum, setCartContentNum, cartContent, setCartContent }}>
       <BrowserRouter>
+      <Auth0ProviderWithHistory>
         <Navbar/>
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="Auth" element={<Auth />} />
+          <Route path="Cart" element={<Cart />} />
           <Route path="Skin/*" element={<WeaponDetail />} />
           <Route path="Skin/" element={<NotFound />} />
           <Route path="Rarity/*" element={<RaritySkins />} />
@@ -42,6 +48,7 @@ const App = () => {
           <Route path="Cases/*" element={<Case_detail />} />
           <Route path="*" element={<NotFound />}/>
         </Routes>
+        </Auth0ProviderWithHistory>
       </BrowserRouter>
     </AppContext.Provider>
   )
