@@ -26,6 +26,7 @@ const Navbar = () => {
     }, []) 
 
     return (
+        <>
         <div className="flex justify-center pb-7">
         <div className="bg-card text-white rounded-b-cool mb-1.5 w-3/5 h-[100%] flex justify-center">
             <img src="/src/logo.png"/>
@@ -42,14 +43,22 @@ const Navbar = () => {
                         {Cases.map(item => (
                             <Link to={`Cases/${item.casename.replace(" ", "_").replace(" ", "_")}`} key={item.casename} onClick={()=>setCasename(item.casename)}>{item.casename}</Link>
                         ))}
-                    </div>                    
+                    </div>
+                    <Link 
+                        className="hover:bg-background p-3 rounded-cool-sm" 
+                        to="/Cart"
+                    >
+                        🛒 {`(${cartContentNum})`}
+                    </Link>                    
                 </div>
-                {/* <Link className="hover:bg-background p-3 rounded-cool-sm" to="/Auth">Auth</Link> */}
-                <Link className="hover:bg-background p-3 rounded-cool-sm" to="/Cart">🛒 {`(${cartContentNum})`}</Link>
-                <AuthenticationButton />
             </div>
         </div>
+        
         </div>
+            <div className="bg-card text-white rounded-b-cool mb-1.5 flex justify-center p-3 fixed right-20 top-0">                
+                <AuthenticationButton />
+            </div>
+        </>
       );
 }
 export default Navbar
