@@ -11,12 +11,17 @@ const WeaponDetail = () => {
     const [SkinImg, setSkinImg] = useState("")
     const [Color, setColor] = useState("")
 
+    const {cartContentNum} = useContext(AppContext)
+    const {setCartContentNum} = useContext(AppContext)
+    const {cartContent} = useContext(AppContext)
+    const {setCartContent} = useContext(AppContext)
+
     useLayoutEffect(() => {
         const skinID = (decodeURI(route).replace(/(skin)/i, '').replace(/\//g, ''))
         Axios.get(`http://localhost:3030/api/getItemsBySkinID/${skinID}`).then((response)=> {
             setSkinsArr(response.data);
             setSkinImg(response.data[0])
-            console.log(response.data[0])
+            // console.log(response.data[0])
         })
     }, [])
 
@@ -44,6 +49,23 @@ const WeaponDetail = () => {
         }
     }, [SkinImg])
 
+    const addToCart = (item) => {
+        console.log(item)
+        setCartContentNum(cartContentNum + 1)
+        setCartContent([
+            ...cartContent,
+            {
+                key: Date.now(),
+                name: item.skinname,
+                image: item.skinimage,
+                wear: item.wear_name,
+                rarity: item.rarity_name,
+                type: item.name,
+                price: item.price
+            }
+          ])
+    }
+    
     return(
         <div className="flex justify-center text-white">
             <div className="flex justify-center w-3/5">
@@ -69,7 +91,7 @@ const WeaponDetail = () => {
                                         <p className="hover:underline">{item.wear_name}</p>
                                         <p className="hover:underline">Price: {item.price} Tokens</p>
                                     </div>
-                                    <button className="bg-buy rounded-cool px-2">Add to cart</button>
+                                    <button className="bg-buy rounded-cool px-2" onClick={() => addToCart(item)}>Add to cart</button>
                                 </div>
                             ))}
                             <div className="bg-cardWear rounded-cool m-3 flex p-2">

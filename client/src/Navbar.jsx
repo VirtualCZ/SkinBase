@@ -3,12 +3,14 @@ import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import App, { AppContext } from "./App";
 
+import AuthenticationButton from "./components/AuthenticationButton"
+
 const navigation_array = [
     { name: '🏠', to: "/"},
-    { name: 'Knives', to: "/Knives" },
-    { name: 'Pistols', to: "/Pistols" },
-    { name: 'Rifles', to: "/Rifles" },
-    { name: 'SMGs', to: "/SMGs" },
+    { name: 'Knives', to: "/Knife" },
+    { name: 'Pistols', to: "/Pistol" },
+    { name: 'Rifles', to: "/Rifle" },
+    { name: 'SMGs', to: "/SMG" },
     { name: 'Heavy', to: "/Heavy" },
   ]
 
@@ -42,8 +44,9 @@ const Navbar = () => {
                         ))}
                     </div>                    
                 </div>
-                <Link className="hover:bg-background p-3 rounded-cool-sm" to="/Auth">Auth</Link>
+                {/* <Link className="hover:bg-background p-3 rounded-cool-sm" to="/Auth">Auth</Link> */}
                 <Link className="hover:bg-background p-3 rounded-cool-sm" to="/Cart">🛒 {`(${cartContentNum})`}</Link>
+                <AuthenticationButton />
             </div>
         </div>
         </div>

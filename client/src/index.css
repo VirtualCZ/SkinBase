@@ -27,7 +27,7 @@
   
   /* Add a red background color to navbar links on hover */
   .navbar a:hover, .dropdown:hover .dropbtn {
-    background-color: #272B30;
+    background-color: #3A3F44;
     border-radius: 5px;
   }
   
@@ -35,9 +35,11 @@
   .dropdown-content {
     display: none;
     position: absolute;
-    background-color: #3A3F44;
+    background-color: #272B30;
     min-width: 160px;
     z-index: 1;
+    border-radius: 0px 5px 5px 5px;
+    min-height: 420px;
   }
   
   /* Links inside the dropdown */
@@ -53,7 +55,7 @@
   
   /* Add a grey background color to dropdown links on hover */
   .dropdown-content a:hover {
-    background-color: #272B30;
+    background-color: #3A3F44;
   }
   
   /* Show the dropdown menu on hover */
@@ -76,23 +78,23 @@
     outline: none;
   }
   .pagination > .active > a{
-    background-color: #47ccde ;
-    border-color: #47ccde ;
+    background-color: #FFD700 ;
+    border-color: #FFD700 ;
     color: #fff;
   }
   .pagination > li > a{
-    border: 1px solid #47ccde ;
+    /* border: 1px solid #1C1E22 ; */
     padding: 5px 10px;
     outline: none;
     cursor: pointer;
   }
   .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus{
-    background-color: #47ccde ;
-    border-color: #47ccde;
+    background-color: #1C1E22 ;
+    border-color: #1C1E22;
     outline: none ;
   }
   .pagination > li > a, .pagination > li > span{
-    color: #47ccde
+    color: white
   }
   .pagination > li:first-child > a, .pagination > li:first-child > span, .pagination > li:last-child > a, .pagination > li:last-child > span{
     border-radius: unset

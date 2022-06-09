@@ -4,28 +4,11 @@ import { useState, useEffect } from "react";
 import ItemCard from "../components/ItemCard";
 
 import ReactPaginate from 'react-paginate';
-import ReactDOM from 'react-dom';
-
-const Items = ({currentItems}) => {
-  return(
-    <>
-      {currentItems && currentItems.map(item => (
-        <ItemCard 
-          key = {item.iditem}
-          casename = {item.casename}
-          skinname = {item.casename} 
-          skinimage = {item.caseimage}
-          price = {item.caseprice}
-        />
-      ))}
-    </>
-  )
-}
 
 const Cases = () => {
   const [data, setData] = useState([])
   const [offset, setOffset] = useState(0);
-  const [perPage] = useState(10);
+  const [perPage] = useState(15);
   const [pageCount, setPageCount] = useState(0)
 
   const getData = async() => {
@@ -44,6 +27,7 @@ const Cases = () => {
               setData(postData)
               setPageCount(Math.ceil(data.length / perPage))
   }
+
   const handlePageClick = (e) => {
     const selectedPage = e.selected;
     setOffset(selectedPage + 1)
@@ -62,9 +46,11 @@ const Cases = () => {
               <p className=" text-4xl whitespace-nowrap py-0.5">Skin Cases</p>
             </span>
           </div>
+
           <div className="grid grid-cols-3">
             {data}
           </div>
+
           <div className="flex">
             <ReactPaginate
               previousLabel={"prev"}
@@ -80,10 +66,10 @@ const Cases = () => {
               activeClassName={"active"}
             />
           </div>
+
         </div>
       </div>
     </div>
     )
 }
-
 export default Cases
