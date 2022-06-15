@@ -50,7 +50,6 @@ const WeaponDetail = () => {
     }, [SkinImg])
 
     const addToCart = (item) => {
-        console.log(item)
         setCartContentNum(cartContentNum + 1)
         setCartContent([
             ...cartContent,
@@ -86,7 +85,7 @@ const WeaponDetail = () => {
                             className="font-bold text-center bg-card h-[95%] w-[95%] m-[2.5%] rounded-cool"
                         >
                             {SkinsArr.map(item => (
-                                <div className=" bg-cardWear rounded-cool m-3 flex p-2">
+                                <div className=" bg-cardWear rounded-cool m-3 flex p-2" key={item.wear_name}>
                                     <div className="flex-grow">                                    
                                         <p className="hover:underline">{item.wear_name}</p>
                                         <p className="hover:underline">Price: {item.price} Tokens</p>

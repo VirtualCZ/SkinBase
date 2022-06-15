@@ -1,9 +1,10 @@
 import Axios from "axios";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useLayoutEffect } from "react";
 import { Link } from "react-router-dom";
 import App, { AppContext } from "./App";
 
 import AuthenticationButton from "./components/AuthenticationButton"
+import Setup from "./components/Setup";
 
 const navigation_array = [
     { name: '🏠', to: "/"},
@@ -14,7 +15,7 @@ const navigation_array = [
     { name: 'Heavy', to: "/Heavy" },
   ]
 
-const Navbar = () => {
+const Navbar = (props) => {
     const [Cases, setCases] = useState([])
     const {setCasename} = useContext(AppContext)
     const {cartContentNum} = useContext(AppContext)
@@ -27,7 +28,8 @@ const Navbar = () => {
 
     return (
         <>
-        <div className="flex justify-center pb-7">
+            <Setup/>
+        <div className=" flex justify-center pb-7 relative z-10">
         <div className="bg-card text-white rounded-b-cool mb-1.5 w-3/5 h-[100%] flex justify-center">
             <img src="/src/logo.png"/>
             <div className="flex flex-row translate-y-[50%] justify-center items-center w-[100%] h-[100%]">
@@ -43,21 +45,21 @@ const Navbar = () => {
                         {Cases.map(item => (
                             <Link to={`Cases/${item.casename.replace(" ", "_").replace(" ", "_")}`} key={item.casename} onClick={()=>setCasename(item.casename)}>{item.casename}</Link>
                         ))}
-                    </div>
-                    <Link 
+                    </div>                
+                </div>
+                <Link 
                         className="hover:bg-background p-3 rounded-cool-sm" 
                         to="/Cart"
                     >
                         🛒 {`(${cartContentNum})`}
-                    </Link>                    
-                </div>
+                </Link>    
             </div>
         </div>
-        
-        </div>
-            <div className="bg-card text-white rounded-b-cool mb-1.5 flex justify-center p-3 fixed right-20 top-0">                
+
+            <div className="bg-card text-white rounded-b-cool mb-1.5 flex justify-center p-3 fixed right-9">                
                 <AuthenticationButton />
             </div>
+        </div>
         </>
       );
 }

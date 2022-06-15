@@ -1,8 +1,87 @@
 import { Link } from "react-router-dom";
 import { useState, useLayoutEffect } from "react";
 import RarityBox from "./RarityBox";
+import { useContext } from "react";
+import { AppContext } from "../App";
+import { useEffect } from "react";
+import axios from "axios";
 
 const ItemCard = (props) => {
+    const { setup } = useContext(AppContext)
+
+    const deletItem = (id) => {
+        if (confirm("Are you sure?")){
+            console.log(id)
+            axios.delete(`http://localhost:3030/api/deleteItem/`, {data: { iditem: id }})
+        }
+    }
+    const deleteCase = (id) => {
+        if (confirm("Are you sure?")){
+            axios.delete(`http://localhost:3030/api/deleteCase/`, {data: { idcase: id }})
+        }
+    }
+
+    const [newprice, setNewprice] = useState(props.price)
+    const [newSkinname, setNewSkinname] = useState(props.skinname)
+
+    useEffect(()=>{
+        // console.log(newprice)
+    },[newprice])
+
+    const confirmInsert = () => {
+        axios.put(`http://localhost:3030/api/updateItem`, {
+            newprice: parseInt(newprice),
+            iditem: props.iditem,
+            skinname: newSkinname,
+            idskin: props.idskin
+        })
+        if (confirm("Updated")){
+            window.location.reload(false)
+        }
+        else{
+            window.location.reload(false)
+        }
+    }
+
+    const [Edit, setEdit] = useState(false)
+    const EditItem = () => {
+        return(
+            <div className="w-[100%]">
+                <p>
+                Item name
+                </p>
+                <input className="text-black mb-2" defaultValue={props.skinname} onChange={(e)=>{setNewSkinname(e.target.value)}} />
+                <p>
+                    Item price
+                </p>
+                <input className="text-black mb-2" defaultValue={props.price} onChange={(e)=>{setNewprice(e.target.value)}} /><br></br>
+                <button className="mt-3 bg-buy p-1 rounded-cool-sm" onClick={()=>{confirmInsert()}}>Submit</button>
+            </div>
+        )
+    }
+
+    const Admin = () => {
+        if (setup === 2 && props.cardtype === "skin"){
+            return(
+                <div className="flex">
+                    <button onClick={() => setEdit(!Edit)} className="m-2 bg-blue-500 py-1 px-3 rounded-cool-sm w-[100%]">Edit</button>
+                    <button onClick={() => deletItem(props.iditem)} className="m-2 bg-red-600 py-1 px-3 rounded-cool-sm w-[100%]">Delete</button>
+                </div>
+            )
+        }
+        if (setup === 2 && props.cardtype === "case"){
+            return(
+                <div className="flex">
+                    <button onClick={() => deleteCase(props.idcase)} className="m-2 bg-red-600 py-1 px-3 rounded-cool-sm w-[100%]">Delete</button>
+                </div>
+            )
+        }
+    }
+
+    useEffect(() => {
+        Admin()
+    }, [setup])
+
     let link = null
     if (props.idskin == null || props.idskin == "")
     {
@@ -37,9 +116,9 @@ const ItemCard = (props) => {
         }
     }, [props])
     return(
+        <div className="font-bold text-center bg-card h-[95%] w-[95%] m-[2.5%] rounded-cool p-5">
         <Link to={link}
             key={props.iditem}
-            className="font-bold text-center bg-card h-[95%] w-[95%] m-[2.5%] rounded-cool p-5"
         >
             <p className="hover:underline">{props.skinname}</p>
             <RarityBox style={Color} rarity_name={props.rarity_name} />
@@ -48,6 +127,9 @@ const ItemCard = (props) => {
             <p className="hover:underline">{props.price}</p>
             <p className="hover:underline">{props.wear_name}</p>
         </Link>
+        {Admin()}
+        {Edit && EditItem()}
+        </div>
     )
 }
 export default ItemCard

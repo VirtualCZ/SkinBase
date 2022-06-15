@@ -1,38 +1,66 @@
-import {useLocation} from 'react-router-dom'
+import {useLocation, useParams} from 'react-router-dom'
 import Axios from "axios";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useLayoutEffect } from "react";
 import { AppContext } from "../App";
 import ItemCard from "../components/ItemCard";
+
+import ReactPaginate from 'react-paginate';
 
 const Case_detail = () => {
   const params = useLocation();
   const route = params.pathname
+  const url = useParams()
   const [Case, setCase] = useState("")
-  const [CaseContent, setCaseContent] = useState([])
+  const [data, setData] = useState([])
+  const [offset, setOffset] = useState(0);
+  const [perPage] = useState(15);
+  const [pageCount, setPageCount] = useState(0)
   const {casename} = useContext(AppContext)
   const {setCasename} = useContext(AppContext)
 
   if (casename == null | casename == "")
   {
       setCasename(route.replace("/Cases/", ""))
-      console.log("route" + casename)
   }
   else
   {
       setCasename(casename.replace("_", " ").replace("_", " "))
-      console.log("context" + casename)
   }
 
-  useEffect(() => {
-    Axios.get(`http://localhost:3030/api/getCaseContent/${casename.replace(" ", "_").replace(" ", "_")}`).then((response)=> {
-      setCaseContent(response.data);
-    })
-  }, [casename])
+  useLayoutEffect(() => {
+    getData()
+  }, [url, location, offset])
 
+  const getData = async() => {
+    const res = await Axios.get(`http://localhost:3030/api/getCaseContent/${casename.replace(" ", "_").replace(" ", "_")}`)
+    const data = res.data;
+                const slice = data.slice(offset, offset + perPage)
+                const postData = slice.map(item => 
+                <ItemCard 
+                  key = {item.iditem}
+                  idskin = {item.idskin}
+                  iditem = {item.iditem}
+                  skinname = {item.skinname} 
+                  rarity_name = {item.rarity_name}
+                  skinimage = {item.skinimage}
+                  price = {item.price}
+                  wear_name = {item.wear_name}
+                  cardtype = "skin"
+                />
+                )
+                setData(postData)
+                setPageCount(Math.ceil(data.length / perPage))
+    }
+
+  const handlePageClick = (e) => {
+    const selectedPage = e.selected;
+    setOffset(selectedPage + 1)
+  };
+
+  // nazev a img
   useEffect(() => {
     Axios.get(`http://localhost:3030/api/getCase/${casename.replace(" ", "_").replace(" ", "_")}`).then((response)=> {
       setCase(response.data[0]);
-      console.log(response.data)
     })
   }, [casename])
 
@@ -48,25 +76,25 @@ const Case_detail = () => {
             </span>
           </div>
           <div className="grid grid-cols-3">
-            {CaseContent.map(item => (
-              <ItemCard 
-                key = {item.iditem}
-                idskin = {item.idskin}
-                skinname = {item.skinname} 
-                rarity_name = {item.rarity_name}
-                skinimage = {item.skinimage}
-                price = {item.price}
-                wear_name = {item.wear_name}
-              />
-            ))}
-
-            <span className=" bg-card h-[35rem] w-[95%] mx-[2.5%] rounded-cool">
-
-            </span>
-            <span className=" bg-card h-[35rem] w-[95%] mx-[2.5%] rounded-cool">
-
-            </span>
+            {data}
           </div>
+
+          <div className="flex">
+            <ReactPaginate
+                previousLabel={"prev"}
+                nextLabel={"next"}
+                breakLabel={"..."}
+                breakClassName={"break-me"}
+                pageCount={pageCount}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+                onPageChange={handlePageClick}
+                containerClassName={"pagination"}
+                subContainerClassName={"pages pagination"}
+                activeClassName={"active"}
+            />
+            </div>
+
         </div>
       </div>
     </div>

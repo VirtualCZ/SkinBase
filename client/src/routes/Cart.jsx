@@ -8,6 +8,7 @@ const Cart = () => {
     const {cartContent} = useContext(AppContext)
     const {setCartContent} = useContext(AppContext)
     const [showitems, setShowitems] = useState(false)
+    const [total, setTotal] = useState(0)
 
     const rarityFunc = (item) => {
         if (item.rarity == "Consumer Grade"){
@@ -40,11 +41,12 @@ const Cart = () => {
       };
 
     useLayoutEffect(() => {
-        if (cartContent.length != 0){
-            setShowitems(true)
-        }
-        else{
+        if (cartContent === null){
             setShowitems(false)
+        }
+        else if(cartContent.length >= 0) {
+            setShowitems(true)
+            setTotal(cartContent.reduce((a, b) => a + b.price, 0))
         }
     }, [cartContent])
 
@@ -80,7 +82,10 @@ const Cart = () => {
                             <button className="text-white p-1 ml-auto bg-red-600 rounded-cool-sm" onClick={() => handleRemove(item.key)}>Remove</button>
                         </div>
                     ))}
-
+                    <div className="flex bg-card rounded-cool p-5 my-[1.5%] items-center text-xl">
+                        <p>Total: {total}</p>
+                        <button className="bg-buy p-1 ml-auto rounded-cool-sm" onClick={() => setCartContent([])}>Checkout</button>
+                    </div>
                 </div>
             </div>
         </div>

@@ -15,28 +15,80 @@ app.use(cors())
 app.use(express.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
-app.delete("/api/sell/:IDOwner/:IDItem", (req, res) =>{
-    const DelOwnerID = req.params.IDOwner
-    const DelItemID = req.params.IDItem
-    const negativeAmount = -1   
-    const sqlSellDelete =
-        "call pInventory_update(?, ?, ?)"
-        db.query(sqlSellDelete, [DelOwnerID, DelItemID, negativeAmount], (err, result) => {
-            if (err) console.log(err)
-        })
-})
+// UPDATES
+app.put("/api/updateItem", (req, res) => {
+    const newprice = req.body.newprice
+    const iditem = req.body.iditem
+    const skinname = req.body.skinname
+    const idskin = req.body.idskin
 
-app.post("/api/insertItem", (req, res) => {
-    const IDItem = parseInt(req.body.idItem)
-    var UserID = parseInt(req.body.userID)
-    const sqlSelect =
-        "call pInventory_update(?, ?, 1)"
-    db.query(sqlSelect, [UserID, IDItem], (err, result)=> {
-        console.log(err)
-        console.log(result)
+    const sqlUpdatePrice =
+        "call pItem_update(?, ?)"
+    db.query(sqlUpdatePrice, [newprice, iditem], (err, result)=> {
+        if (err) console.log(err)
+    });
+    const sqlUpdateName =
+        "call pSkin_update(?, ?)"
+    db.query(sqlUpdateName, [skinname, idskin], (err, result)=> {
+        if (err) console.log(err)
     });
 })
 
+// DELETES
+app.delete("/api/deleteItem/", (req, res) =>{
+    const iditem = req.body.iditem
+    const sqldeleteitem =
+        "call pItem_delete(?)"
+        db.query(sqldeleteitem, iditem, (err, result) => {
+            if (err) console.log(err)
+        })
+    const sqldeleteinventory =
+    "call pItemInventory_delete(?)"
+    db.query(sqldeleteinventory, iditem, (err, result) => {
+        if (err) console.log(err)
+    })
+})
+
+app.delete("/api/deleteCase/", (req, res) =>{
+    const idcase = req.body.idcase
+    const sqldeletecase =
+    "call pCase_delete(?)"
+    db.query(sqldeletecase, idcase, (err, result) => {
+        if (err) console.log(err)
+    })
+    
+    // const sqldeleteitems =
+    // "call pSkinCase_delete(?)"
+    // db.query(sqldeleteitems, idcase, (err, result) => {
+    //     if (err) console.log(err)
+    // })
+
+})
+
+// INSERTS
+app.post("/api/insertUser", (req, res) => {
+    const idAuth = req.body.idAuth
+    const tokens = parseInt(req.body.tokens)
+    const phone = parseInt(req.body.phone)
+    const sql = 
+        "call pUser_insert(?,?,?)"
+    db.query(sql, [idAuth, tokens, phone], (err, result) => {
+        if (err) console.log(err)
+    })
+})
+
+app.post("/api/insertCase", (req, res) => {
+    const name = req.body.name
+    const img = req.body.img
+    const price = req.body.price
+    const sql = 
+        "call pCase_insert(?,?,?)"
+    db.query(sql, [name, img, price], (err, result) => {
+        if (err) console.log(err)
+    })
+})
+
+// SELECTS
 app.get("/api/getItemsBySkinID/:skinid", (req, res) => {
     const skinID = req.params.skinid
     const sqlSelect =
@@ -63,6 +115,15 @@ app.get("/api/getCaseContent/:casename", (req, res) => {
         "call pCaseContent_select(?) "
     db.query(sqlSelect, casename, (err, result)=> {
         //console.log(err)
+        res.send(result[0])
+    });
+})
+
+app.get("/api/getOneUser/:auth0", (req, res) => {
+    const auth0 = req.params.auth0
+    const sql =
+        "call pOneUser_select(?)"
+    db.query(sql, auth0, (err, result)=> {
         res.send(result[0])
     });
 })

@@ -11,27 +11,30 @@ const Weapons = () => {
     const [offset, setOffset] = useState(0);
     const [perPage] = useState(15);
     const [pageCount, setPageCount] = useState(0)
+    const location = useLocation()
     const url = useParams()
     const [Type, setType] = useState(url.type)
 
     useLayoutEffect(() => {
         setType(url.type)
         getData()
-    }, [url])
+    }, [url, location])
 
     const getData = async() => {
-        const res = await Axios.get(`http://localhost:3030/api/getItemsByType/${Type}`)
+        const res = await Axios.get(`http://localhost:3030/api/getItemsByType/${url.type}`)
         const data = res.data;
                     const slice = data.slice(offset, offset + perPage)
                     const postData = slice.map(item => 
                     <ItemCard 
                         key = {item.iditem}
+                        iditem = {item.iditem}
                         idskin = {item.idskin}
                         skinname = {item.skinname} 
                         rarity_name = {item.rarity_name}
                         skinimage = {item.skinimage}
                         price = {item.price}
                         wear_name = {item.wear_name}
+                        cardtype = "skin"
                     />
                     )
                     setData(postData)
